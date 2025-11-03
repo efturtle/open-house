@@ -3,18 +3,21 @@ import { BACKEND_URL } from '../../../lib/api-utils';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = searchParams.get('page') || '1';
-    const sort = searchParams.get('sort');
     
-    // Build backend URL with parameters
-    let backendUrl = `${BACKEND_URL}/properties?page=${page}`;
+    // Build backend URL and forward all search parameters
+    const backendUrl = new URL(`${BACKEND_URL}/properties`);
     
-    // For initial load, prioritize available properties
-    if (sort === 'status_priority') {
-      backendUrl += '&status=disponible';
+    // Forward all search parameters to the backend
+    searchParams.forEach((value, key) => {
+      backendUrl.searchParams.append(key, value);
+    });
+    
+    // Log the forwarded URL for debugging (only in development)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Forwarding request to backend:', backendUrl.toString());
     }
     
-    const response = await fetch(backendUrl, {
+    const response = await fetch(backendUrl.toString(), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -22,7 +25,8 @@ export async function GET(request: Request) {
     });
 
     if (!response.ok) {
-      throw new Error(`Backend error: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`Backend error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();

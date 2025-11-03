@@ -16,12 +16,12 @@ export function useProperties() {
   const fetchProperties = async (page: number = 1, prioritizeAvailable: boolean = false) => {
     try {
       setLoading(true);
-      // Always include page parameter for consistency
+      // Build URL with pagination
       let url = `/api/properties?page=${page}`;
       
-      // Add sort parameter to prioritize available properties
+      // Add sorting to prioritize available properties using proper Laravel parameters
       if (prioritizeAvailable) {
-        url += '&sort=status_priority';
+        url += '&sort_by=status&sort_direction=asc'; // This will sort by status (disponible comes first alphabetically)
       }
       
       const response = await fetch(url);
@@ -48,11 +48,11 @@ export function useProperties() {
   };
 
   const fetchPage = (page: number) => {
-    fetchProperties(page, false); // Regular pagination doesn't prioritize
+    fetchProperties(page, false); // Regular pagination without prioritization
   };
 
   useEffect(() => {
-    fetchProperties(1, true); // Initial load prioritizes available properties
+    fetchProperties(1, true); // Initial load with available properties prioritized
   }, []);
 
   return { data, meta, links, loading, error, refetch: fetchProperties, fetchPage, currentPage };
@@ -77,7 +77,7 @@ export function usePropertySearch() {
         }
       });
 
-      const response = await fetch(`/api/properties/search?${searchParams}`);
+      const response = await fetch(`/api/properties?${searchParams}`);
       
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
