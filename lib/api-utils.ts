@@ -1,5 +1,5 @@
 // Backend API configuration and utility functions
-export const BACKEND_URL = 'http://127.0.0.1:8000/api';
+export const BACKEND_URL = process.env.BACKEND_URL || 'http://127.0.0.1:8000/api';
 
 // Type definitions for common API responses
 export interface ApiError {

@@ -1,4 +1,4 @@
-const BACKEND_URL = 'http://127.0.0.1:8000/api';
+import { BACKEND_URL } from '../../../../lib/api-utils';
 
 export async function GET(request: Request) {
   try {
