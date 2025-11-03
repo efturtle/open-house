@@ -2,10 +2,10 @@ const BACKEND_URL = 'http://127.0.0.1:8000/api';
 
 export async function GET(
   request: Request,
-  { params }: { params: { property: string } }
+  { params }: { params: Promise<{ property: string }> }
 ) {
   try {
-    const propertyId = params.property;
+    const { property: propertyId } = await params;
     
     const response = await fetch(`${BACKEND_URL}/properties/${propertyId}`, {
       method: 'GET',
@@ -37,10 +37,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { property: string } }
+  { params }: { params: Promise<{ property: string }> }
 ) {
   try {
-    const propertyId = params.property;
+    const { property: propertyId } = await params;
     const body = await request.json();
     
     const response = await fetch(`${BACKEND_URL}/properties/${propertyId}`, {
@@ -74,10 +74,10 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { property: string } }
+  { params }: { params: Promise<{ property: string }> }
 ) {
   try {
-    const propertyId = params.property;
+    const { property: propertyId } = await params;
     
     const response = await fetch(`${BACKEND_URL}/properties/${propertyId}`, {
       method: 'DELETE',
@@ -114,10 +114,10 @@ export async function DELETE(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { property: string } }
+  { params }: { params: Promise<{ property: string }> }
 ) {
   try {
-    const propertyId = params.property;
+    const { property: propertyId } = await params;
     const body = await request.json();
     
     const response = await fetch(`${BACKEND_URL}/properties/${propertyId}`, {
